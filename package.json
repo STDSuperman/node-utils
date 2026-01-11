@@ -1,0 +1,46 @@
+{
+  "name": "git-m",
+  "version": "1.0.0",
+  "description": "Unified git repository management tool",
+  "main": "dist/index.js",
+  "bin": {
+    "git-m": "./bin/git-m.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/index.ts",
+    "test": "vitest",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "git",
+    "cli",
+    "repository",
+    "management"
+  ],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "files": [
+    "dist",
+    "bin",
+    "README.md",
+    "LICENSE"
+  ],
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "clipboardy": "^4.0.0",
+    "commander": "^11.1.0",
+    "inquirer": "^9.2.12",
+    "ora": "^8.0.1"
+  },
+  "devDependencies": {
+    "@types/inquirer": "^9.0.7",
+    "@types/node": "^20.10.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3",
+    "vitest": "^1.1.0"
+  }
+}
