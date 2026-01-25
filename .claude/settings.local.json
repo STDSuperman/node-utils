@@ -9,7 +9,14 @@
       "Bash(git commit -m \"$\\(cat <<''EOF''\nfeat: add rpd command as a shorter alias for repo-do\n\n- Added ''rpd'' as an alias in package.json bin configuration\n- Updated README with tip about using the shorter rpd command\n- Improves user experience with faster command typing\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
       "Bash(git config:*)",
       "Bash(git commit:*)",
-      "Bash(npm login)"
+      "Bash(npm login)",
+      "Bash(pnpm install:*)",
+      "Bash(pnpm build:*)",
+      "Bash(pnpm link:*)",
+      "Bash(skm:*)",
+      "Bash(node packages/skill-manager/bin/skm.js:*)",
+      "Bash(node ../packages/skill-manager/bin/skm.js list:*)",
+      "Bash(node ../packages/skill-manager/bin/skm.js add:*)"
     ]
   }
 }
