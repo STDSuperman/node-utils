@@ -3,19 +3,33 @@ import path from 'path';
 import { getLocalSkills } from '../core/discovery.js';
 import { removeDirSymlink } from '../core/symlink.js';
 import { logger } from '../utils/logger.js';
+import { Skill } from '../types/index.js';
 
 export async function remove() {
-  const targetDir = path.resolve('.claude/skills');
-  const skills = getLocalSkills(targetDir);
+  // Scan all skill type directories
+  const targetDirMap: Record<string, string> = {
+    claude: '.claude/skills',
+    opencode: '.opencode/skills',
+    openclaw: '.openclaw/skills'
+  };
 
-  if (skills.length === 0) {
-    logger.info(`No skills found in ${targetDir}`);
+  const allSkills: Array<{ skill: Skill; type: string }> = [];
+
+  for (const [type, targetDir] of Object.entries(targetDirMap)) {
+    const skills = getLocalSkills(path.resolve(targetDir));
+    for (const skill of skills) {
+      allSkills.push({ skill, type });
+    }
+  }
+
+  if (allSkills.length === 0) {
+    logger.info('No skills found in any directory');
     return;
   }
 
-  const choices = skills.map(skill => ({
-    name: skill.name,
-    value: skill
+  const choices = allSkills.map(({ skill, type }) => ({
+    name: `${skill.name} (${type})`,
+    value: { skill, type }
   }));
 
   const { selectedSkills } = await inquirer.prompt([
@@ -51,7 +65,7 @@ export async function remove() {
   const spinner = logger.spinner(`Removing ${selectedSkills.length} skill(s)...`).start();
 
   let successCount = 0;
-  for (const skill of selectedSkills) {
+  for (const { skill, type } of selectedSkills) {
     const success = await removeDirSymlink(skill.dirPath);
     if (success) {
       successCount++;

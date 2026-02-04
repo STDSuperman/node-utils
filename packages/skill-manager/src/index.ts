@@ -17,7 +17,8 @@ program
 
 program
   .command('add')
-  .description('Interactively add skills to current project (.claude/skills)')
+  .description('Interactively add skills to current project (.claude/skills) or globally (--global)')
+  .option('-g, --global', 'Install skills to global directory (~/.claude/skills, ~/.opencode/skills, or ~/.openclaw/skills)')
   .action(add);
 
 program
