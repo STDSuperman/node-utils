@@ -6,7 +6,18 @@ export class ClipboardUtil {
       await clipboardy.write(text);
       return true;
     } catch (error) {
-      console.warn('Warning: Failed to copy to clipboard:', (error as Error).message);
+      const platform = process.platform;
+      let hint = '';
+      
+      if (platform === 'linux') {
+        hint = ' Install xsel or xclip: sudo apt install xsel (Debian/Ubuntu) or sudo dnf install xsel (Fedora)';
+      } else if (platform === 'darwin') {
+        hint = ' This should work on macOS, please check your system permissions.';
+      } else if (platform === 'win32') {
+        hint = ' This should work on Windows, please check your system permissions.';
+      }
+      
+      console.warn(`Warning: Failed to copy to clipboard.${hint}`);
       return false;
     }
   }
