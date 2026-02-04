@@ -56,11 +56,16 @@ export async function add(options: AddOptions = {}) {
   }
 
   const spinner = logger.spinner('Discovering skills...').start();
-  const skills = discoverSkills(sources);
+  const allSkills = discoverSkills(sources);
+
+  // Filter skills based on type: universal skills and matching type skills
+  const skills = allSkills.filter(skill =>
+    skill.type === 'universal' || skill.type === skillType
+  );
 
   if (skills.length === 0) {
     spinner.fail('No skills found');
-    logger.info('Make sure your source directories contain skills/ or .claude/skills/ subdirectories');
+    logger.info(`Make sure your source directories contain skills/ or .${skillType}/skills/ subdirectories`);
     return;
   }
 
@@ -74,9 +79,12 @@ export async function add(options: AddOptions = {}) {
   // Create choices with filter support
   const choices = skills.map(skill => {
     const isLinked = existingNames.has(skill.name);
+    const typeBadge = skill.type === 'universal'
+      ? chalk.blue('[universal]')
+      : chalk.gray(`[${skill.type}]`);
 
     return {
-      name: `${skill.name}${isLinked ? chalk.gray(' (already linked)') : ''} ${chalk.gray(`[${skill.source}]`)}`,
+      name: `${skill.name}${isLinked ? chalk.gray(' (already linked)') : ''} ${typeBadge} ${chalk.gray(`[${skill.source}]`)}`,
       value: skill,
       disabled: isLinked
     };

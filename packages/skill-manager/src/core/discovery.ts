@@ -1,6 +1,14 @@
 import fs from 'fs-extra';
 import path from 'path';
-import { Skill } from '../types/index.js';
+import { Skill, SkillType } from '../types/index.js';
+
+// Define skill directories to scan with their corresponding types
+const SKILL_DIRS_CONFIG = [
+  { dir: 'skills', type: 'universal' as SkillType },
+  { dir: '.claude/skills', type: 'claude' as SkillType },
+  { dir: '.opencode/skills', type: 'opencode' as SkillType },
+  { dir: '.openclaw/skills', type: 'openclaw' as SkillType }
+];
 
 export function discoverSkills(sources: string[]): Skill[] {
   const skills: Skill[] = [];
@@ -11,27 +19,22 @@ export function discoverSkills(sources: string[]): Skill[] {
       continue;
     }
 
-    // Look for skills/ and .claude/skills/ directories in the source
-    const skillDirs = [
-      path.join(source, 'skills'),
-      path.join(source, '.claude', 'skills')
-    ];
+    for (const { dir: skillDir, type } of SKILL_DIRS_CONFIG) {
+      const skillPath = path.join(source, skillDir);
 
-    for (const skillDir of skillDirs) {
-      if (!fs.existsSync(skillDir)) {
+      if (!fs.existsSync(skillPath)) {
         continue;
       }
 
       try {
-        const entries = fs.readdirSync(skillDir, { withFileTypes: true });
+        const entries = fs.readdirSync(skillPath, { withFileTypes: true });
 
         for (const entry of entries) {
           if (!entry.isDirectory()) {
             continue;
           }
 
-          const skillPath = path.join(skillDir, entry.name);
-          const absolutePath = path.resolve(skillPath);
+          const absolutePath = path.resolve(skillPath, entry.name);
 
           // Skip if already processed
           if (seen.has(absolutePath)) {
@@ -43,7 +46,8 @@ export function discoverSkills(sources: string[]): Skill[] {
           skills.push({
             name: entry.name,
             dirPath: absolutePath,
-            source
+            source,
+            type
           });
         }
       } catch (error) {
@@ -78,7 +82,8 @@ export function getLocalSkills(targetDir: string = '.claude/skills'): Skill[] {
       skills.push({
         name: entry.name,
         dirPath: path.resolve(skillPath),
-        source: 'local'
+        source: 'local',
+        type: 'universal' // Local skills default to universal
       });
     }
   } catch (error) {

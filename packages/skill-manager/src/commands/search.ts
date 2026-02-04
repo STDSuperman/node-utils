@@ -29,7 +29,11 @@ export async function search(keyword: string) {
 
   console.log('');
   for (const skill of matches) {
-    console.log(`${chalk.green('•')} ${chalk.bold(skill.name)}`);
+    const typeBadge = skill.type === 'universal'
+      ? chalk.blue('[universal]')
+      : chalk.gray(`[${skill.type}]`);
+
+    console.log(`${chalk.green('•')} ${chalk.bold(skill.name)} ${typeBadge}`);
     console.log(`  ${chalk.gray(`Source: ${skill.source}`)}`);
     console.log(`  ${chalk.gray(skill.dirPath)}`);
     console.log('');

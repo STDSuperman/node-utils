@@ -36,7 +36,11 @@ export async function list() {
     console.log(chalk.bold.cyan(`📦 ${source}`));
 
     for (const skill of sourceSkills) {
-      console.log(`  ${chalk.green('•')} ${chalk.bold(skill.name)}`);
+      const typeBadge = skill.type === 'universal'
+        ? chalk.blue('[universal]')
+        : chalk.gray(`[${skill.type}]`);
+
+      console.log(`  ${chalk.green('•')} ${chalk.bold(skill.name)} ${typeBadge}`);
       console.log(`    ${chalk.gray(skill.dirPath)}`);
     }
     console.log('');

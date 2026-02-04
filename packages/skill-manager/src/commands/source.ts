@@ -4,6 +4,7 @@ import { expandPath } from '../utils/paths.js';
 import { logger } from '../utils/logger.js';
 import chalk from 'chalk';
 import fs from 'fs-extra';
+import { parseGitHubUrl, cloneRepo } from '../utils/git-utils.js';
 
 export async function sourceAdd(sourcePath?: string) {
   let pathToAdd: string;
@@ -13,7 +14,7 @@ export async function sourceAdd(sourcePath?: string) {
       {
         type: 'input',
         name: 'inputPath',
-        message: 'Enter source directory path:',
+        message: 'Enter source directory path or GitHub URL:',
         validate: (input) => input.trim() !== '' || 'Path cannot be empty'
       }
     ]);
@@ -23,20 +24,41 @@ export async function sourceAdd(sourcePath?: string) {
   }
 
   try {
-    const expanded = expandPath(pathToAdd);
+    // Check if it's a GitHub URL
+    const { url: gitUrl, isGitHub } = parseGitHubUrl(pathToAdd);
 
-    if (!fs.existsSync(expanded)) {
-      logger.error(`Path does not exist: ${expanded}`);
-      return;
+    if (isGitHub) {
+      // It's a GitHub URL - clone it using repo-do
+      const spinner = logger.spinner(`Cloning from GitHub...`).start();
+      try {
+        const clonedPath = await cloneRepo(gitUrl);
+        spinner.succeed(`Cloned to ${clonedPath}`);
+
+        // Add the local path as source
+        addSource(clonedPath);
+        logger.success(`Added source: ${clonedPath}`);
+        logger.info(`Original URL: ${pathToAdd}`);
+      } catch (error: any) {
+        spinner.fail(`Clone failed: ${error.message}`);
+        return;
+      }
+    } else {
+      // It's a local path
+      const expanded = expandPath(pathToAdd);
+
+      if (!fs.existsSync(expanded)) {
+        logger.error(`Path does not exist: ${expanded}`);
+        return;
+      }
+
+      if (!fs.statSync(expanded).isDirectory()) {
+        logger.error(`Path is not a directory: ${expanded}`);
+        return;
+      }
+
+      addSource(pathToAdd);
+      logger.success(`Added source: ${pathToAdd}`);
     }
-
-    if (!fs.statSync(expanded).isDirectory()) {
-      logger.error(`Path is not a directory: ${expanded}`);
-      return;
-    }
-
-    addSource(pathToAdd);
-    logger.success(`Added source: ${pathToAdd}`);
   } catch (error: any) {
     logger.error(error.message);
   }

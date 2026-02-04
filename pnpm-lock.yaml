@@ -105,6 +105,9 @@ importers:
       ora:
         specifier: ^8.0.1
         version: 8.2.0
+      repo-do:
+        specifier: workspace:*
+        version: link:../repo-do
     devDependencies:
       '@babel/core':
         specifier: ^7.28.6
