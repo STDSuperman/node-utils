@@ -6,7 +6,7 @@ import dynamicImportVars from '@rollup/plugin-dynamic-import-vars';
 import autoExternal from 'rollup-plugin-auto-external';
 
 export default {
-  input: 'src/index.ts',
+  input: ['src/index.ts', 'src/cli.ts'],
   output: {
     dir: 'dist',
     format: 'es',

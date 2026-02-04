@@ -35,6 +35,28 @@ export function parseGitHubUrl(url: string): { url: string; isGitHub: boolean } 
  * Clone a repository using repo-do (rpd) CLI
  */
 export async function cloneRepo(url: string): Promise<string> {
+  // First try to use repo-do's internal API
+  try {
+    const repoDoModule = await import('repo-do');
+    if (repoDoModule.add) {
+      const result = await repoDoModule.add(url);
+      if (result.success || result.alreadyExists) {
+        return result.path;
+      }
+      throw new Error(result.message || 'Failed to clone repository using repo-do API');
+    }
+  } catch (importError: any) {
+    // If import fails, fall back to CLI command
+    // Check if error is about module not found
+    if (importError.code === 'MODULE_NOT_FOUND' || importError.message.includes('Cannot find module')) {
+      logger.warn('repo-do not installed, falling back to CLI command');
+    } else {
+      // Other errors, still try CLI fallback
+      logger.warn(`repo-do API error: ${importError.message}, falling back to CLI command`);
+    }
+  }
+
+  // Fallback: use CLI command
   try {
     const { stdout, stderr } = await execAsync(`rpd add "${url}"`, { encoding: 'utf8' });
 

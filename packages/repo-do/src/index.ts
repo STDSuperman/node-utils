@@ -1,64 +1,42 @@
-#!/usr/bin/env node
+import { repositoryManager } from './core/repository-manager';
+import { ICloneResult, IFindResult, IRepositoryInfo } from './types';
 
-import { Command } from 'commander';
-import { initCommand } from './commands/init';
-import { addCommand } from './commands/add';
-import { listCommand } from './commands/list';
-import { findCommand } from './commands/find';
-import { removeCommand } from './commands/remove';
-import { configCommand } from './commands/config';
+/**
+ * Add a repository programmatically
+ * @param url - Git repository URL
+ * @param options - Options with optional clone arguments
+ * @returns Clone result with path and status
+ */
+export async function add(url: string, options: { cloneArgs?: string[] } = {}): Promise<ICloneResult> {
+  return repositoryManager.cloneRepository(url, options.cloneArgs || []);
+}
 
-const program = new Command();
+/**
+ * List all managed repositories
+ * @param refresh - Force rebuild cache
+ * @returns List of repository information
+ */
+export async function list(refresh: boolean = false): Promise<IRepositoryInfo[]> {
+  return repositoryManager.listRepositories(refresh);
+}
 
-program
-  .name('repo-do')
-  .description('Unified git repository management tool')
-  .version('1.0.0');
+/**
+ * Find repositories by query
+ * @param query - Search query
+ * @returns List of matching repositories
+ */
+export async function find(query: string): Promise<IRepositoryInfo[]> {
+  return repositoryManager.findRepositories(query);
+}
 
-program
-  .command('init')
-  .description('Initialize configuration')
-  .action(initCommand);
+/**
+ * Remove a repository from management
+ * @param identifier - Repository identifier (name or partial path)
+ */
+export async function remove(identifier: string): Promise<void> {
+  return repositoryManager.removeRepository(identifier);
+}
 
-program
-  .command('add <url>')
-  .description('Clone a git repository')
-  .allowUnknownOption()
-  .action((url: string, options: any, command: Command) => {
-    const args = command.args.slice(1);
-    addCommand(url, { args });
-  });
-
-program
-  .command('list')
-  .description('List all managed repositories')
-  .option('--refresh', 'Refresh repository cache')
-  .action((options) => {
-    listCommand({ refresh: options.refresh });
-  });
-
-program
-  .command('find <prefix>')
-  .description('Find repositories by name prefix')
-  .action(findCommand);
-
-program
-  .command('remove <identifier>')
-  .description('Remove repository from management (files not deleted)')
-  .action(removeCommand);
-
-program
-  .command('config')
-  .description('View or modify configuration')
-  .option('--get <key>', 'Get configuration value')
-  .option('--set <key>', 'Set configuration key')
-  .option('--value <value>', 'Configuration value to set')
-  .action((options) => {
-    configCommand({
-      get: options.get,
-      set: options.set,
-      value: options.value,
-    });
-  });
-
-program.parse();
+// Export types for TypeScript users
+export type { ICloneResult, IFindResult, IRepositoryInfo, IGitMConfig, IParsedGitUrl } from './types';
+export { GitMError } from './types';
