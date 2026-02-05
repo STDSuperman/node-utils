@@ -1,5 +1,11 @@
 # repo-do
 
+## 1.2.0
+
+### Minor Changes
+
+- find 增强
+
 ## 1.1.0
 
 ### Minor Changes
