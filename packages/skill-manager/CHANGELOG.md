@@ -1,5 +1,11 @@
 # skill-manager
 
+## 1.4.0
+
+### Minor Changes
+
+- f205fcf: 支持源更新命令
+
 ## 1.3.1
 
 ### Patch Changes
