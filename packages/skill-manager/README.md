@@ -179,6 +179,31 @@ List all configured source directories with validation status.
 #### `skm source remove` (alias: `rm`)
 Interactively remove a source directory from configuration.
 
+#### `skm source update`
+Update all git source repositories by running `git pull` on each configured source that is a git repository.
+
+**Options:**
+- No options: Automatically update all git sources
+- `-i, --interactive`: Select which git sources to update via multi-select interface
+
+**Behavior:**
+- Scans all configured sources from `.skmrc.json`
+- Filters sources that are git repositories (have `.git` directory)
+- Runs `git pull` for each git source
+- Shows progress spinner and summary report
+- Non-git sources are skipped silently
+- Sources that don't exist are skipped with warning
+- Reports sources already up to date separately from those with updates
+
+**Example:**
+```bash
+# Update all git sources
+skm source update
+
+# Select which sources to update
+skm source update --interactive
+```
+
 ## How It Works
 
 1. **Source Configuration**: You configure source directories using `skm source add` (supports local paths and GitHub URLs)
@@ -187,7 +212,7 @@ Interactively remove a source directory from configuration.
 4. **Type-Based Filtering**: Universal skills (`skills/`) work on all platforms, platform-specific skills only on their respective platforms
 5. **Directory Linking**: When you add a skill, the entire skill directory is symlinked (not individual files)
 6. **Project Isolation**: Each project has its own `.claude/skills/` with symlinks to selected skills
-7. **Easy Updates**: Edit skills in source, changes reflect in all projects via symlinks
+7. **Easy Updates**: Update source repositories with `skm source update`, changes reflect in all projects via symlinks
 
 ## Example Workflow
 
