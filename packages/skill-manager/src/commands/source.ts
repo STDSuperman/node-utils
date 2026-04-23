@@ -24,9 +24,17 @@ function isGitRepo(dir: string): boolean {
  */
 async function gitPull(dir: string): Promise<boolean> {
   try {
-    const { stdout, stderr } = await execAsync('git pull', { cwd: dir, encoding: 'utf8' });
-    const output = stdout + stderr;
-    return !output.includes('Already up to date');
+    // Get current HEAD
+    const { stdout: beforeHead } = await execAsync('git rev-parse HEAD', { cwd: dir, encoding: 'utf8' });
+
+    // Pull updates
+    await execAsync('git pull', { cwd: dir, encoding: 'utf8' });
+
+    // Get new HEAD
+    const { stdout: afterHead } = await execAsync('git rev-parse HEAD', { cwd: dir, encoding: 'utf8' });
+
+    // If HEAD changed, updates were pulled
+    return beforeHead.trim() !== afterHead.trim();
   } catch (error: any) {
     throw new Error(`Git pull failed: ${error.message}`);
   }
@@ -209,31 +217,30 @@ export async function sourceUpdate(options: SourceUpdateOptions = {}) {
   }
 
   console.log('');
-  const spinner = logger.spinner(`Updating ${sourcesToUpdate.length} source repository...`).start();
+  const spinner = logger.spinner(`Updating sources (0/${sourcesToUpdate.length})...`).start();
 
   let updatedCount = 0;
   let alreadyUpToDateCount = 0;
   const errors: string[] = [];
+  let processed = 0;
 
   for (const { source, expandedPath } of sourcesToUpdate) {
     try {
-      spinner.text = `Updating ${source}...`;
       const hasUpdates = await gitPull(expandedPath);
+      processed++;
+      spinner.text = `Updating sources (${processed}/${sourcesToUpdate.length})...`;
 
       if (hasUpdates) {
         updatedCount++;
-        spinner.succeed(`Updated ${source}`);
       } else {
         alreadyUpToDateCount++;
-        spinner.info(`${source} already up to date`);
       }
-      spinner.start();
     } catch (error: any) {
       errors.push(`${source}: ${error.message}`);
     }
   }
 
-  spinner.stop();
+  spinner.succeed(`Processed ${processed}/${sourcesToUpdate.length} sources`);
 
   // Summary
   console.log('');
