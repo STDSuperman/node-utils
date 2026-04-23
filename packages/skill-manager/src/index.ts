@@ -7,7 +7,6 @@ import { remove } from './commands/remove.js';
 import { search } from './commands/search.js';
 import { config } from './commands/config.js';
 import { sourceAdd, sourceList, sourceRemove, sourceUpdate } from './commands/source.js';
-import { update } from './commands/update.js';
 
 const program = new Command();
 
@@ -70,11 +69,5 @@ program
   .command('config')
   .description('Show current configuration')
   .action(config);
-
-program
-  .command('update')
-  .description('Update skills from git repositories')
-  .option('-a, --all', 'Update all git repository skills without prompting')
-  .action(update);
 
 program.parse();
