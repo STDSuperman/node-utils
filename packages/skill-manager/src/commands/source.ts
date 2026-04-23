@@ -164,6 +164,15 @@ export async function sourceUpdate(options: SourceUpdateOptions = {}) {
     return;
   }
 
+  // Check if git is available
+  try {
+    await execAsync('git --version');
+  } catch (error) {
+    logger.error('Git is not installed or not in PATH');
+    logger.info('Please install git to use source update functionality');
+    return;
+  }
+
   // Get expanded source paths and filter git repositories
   const gitSources: Array<{ source: string; expandedPath: string; isGit: boolean }> = [];
 
@@ -226,9 +235,9 @@ export async function sourceUpdate(options: SourceUpdateOptions = {}) {
 
   for (const { source, expandedPath } of sourcesToUpdate) {
     try {
+      spinner.text = `Updating sources (${processed}/${sourcesToUpdate.length})...`;
       const hasUpdates = await gitPull(expandedPath);
       processed++;
-      spinner.text = `Updating sources (${processed}/${sourcesToUpdate.length})...`;
 
       if (hasUpdates) {
         updatedCount++;
@@ -237,6 +246,9 @@ export async function sourceUpdate(options: SourceUpdateOptions = {}) {
       }
     } catch (error: any) {
       errors.push(`${source}: ${error.message}`);
+      processed++;
+      logger.error(`Failed to update ${source}: ${error.message}`);
+      spinner.text = `Updating sources (${processed}/${sourcesToUpdate.length}, ${errors.length} errors)...`;
     }
   }
 
