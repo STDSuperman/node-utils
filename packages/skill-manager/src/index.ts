@@ -6,7 +6,7 @@ import { list } from './commands/list.js';
 import { remove } from './commands/remove.js';
 import { search } from './commands/search.js';
 import { config } from './commands/config.js';
-import { sourceAdd, sourceList, sourceRemove } from './commands/source.js';
+import { sourceAdd, sourceList, sourceRemove, sourceUpdate } from './commands/source.js';
 import { update } from './commands/update.js';
 
 const program = new Command();
@@ -59,6 +59,12 @@ sourceCmd
   .description('Remove a source directory')
   .alias('rm')
   .action(sourceRemove);
+
+sourceCmd
+  .command('update')
+  .description('Update all git source repositories')
+  .option('-i, --interactive', 'Interactively select which sources to update')
+  .action(sourceUpdate);
 
 program
   .command('config')
