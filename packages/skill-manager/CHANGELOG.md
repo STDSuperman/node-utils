@@ -1,5 +1,12 @@
 # skill-manager
 
+## 1.4.2
+
+### Patch Changes
+
+- Updated dependencies
+  - repo-do@1.2.1
+
 ## 1.4.0
 
 ### Minor Changes

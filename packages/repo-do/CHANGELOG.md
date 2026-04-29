@@ -1,5 +1,11 @@
 # repo-do
 
+## 1.2.1
+
+### Patch Changes
+
+- 支持 rpd --json 参数
+
 ## 1.2.0
 
 ### Minor Changes
