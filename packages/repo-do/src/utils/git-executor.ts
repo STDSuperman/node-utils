@@ -9,17 +9,17 @@ export interface IExecuteResult {
 }
 
 export class GitExecutor {
-  async checkGitInstalled(): Promise<boolean> {
+  async checkGitInstalled(silent?: boolean): Promise<boolean> {
     try {
-      const result = await this.execute('git', ['--version']);
+      const result = await this.execute('git', ['--version'], silent);
       return result.success;
     } catch {
       return false;
     }
   }
 
-  async clone(url: string, targetPath: string, args: string[] = []): Promise<IExecuteResult> {
-    const gitInstalled = await this.checkGitInstalled();
+  async clone(url: string, targetPath: string, args: string[] = [], options?: { silent?: boolean }): Promise<IExecuteResult> {
+    const gitInstalled = await this.checkGitInstalled(options?.silent);
     if (!gitInstalled) {
       throw new GitMError(
         'Git is not installed. Please install git first.',
@@ -28,10 +28,10 @@ export class GitExecutor {
     }
 
     const cloneArgs = ['clone', ...args, url, targetPath];
-    return this.execute('git', cloneArgs);
+    return this.execute('git', cloneArgs, options?.silent);
   }
 
-  private async execute(command: string, args: string[]): Promise<IExecuteResult> {
+  private async execute(command: string, args: string[], silent?: boolean): Promise<IExecuteResult> {
     return new Promise((resolve, reject) => {
       const child = spawn(command, args, {
         stdio: ['ignore', 'pipe', 'pipe'],
@@ -44,13 +44,13 @@ export class GitExecutor {
       child.stdout?.on('data', (data) => {
         const text = data.toString();
         stdout += text;
-        process.stdout.write(text);
+        if (!silent) process.stdout.write(text);
       });
 
       child.stderr?.on('data', (data) => {
         const text = data.toString();
         stderr += text;
-        process.stderr.write(text);
+        if (!silent) process.stderr.write(text);
       });
 
       child.on('error', (error) => {

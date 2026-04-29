@@ -116,6 +116,29 @@ repo-do add https://github.com/STDSuperman/super-image-cropper.git --branch deve
 
 # SSH 克隆
 repo-do add git@github.com:STDSuperman/NanoBanana-PPT-Skills.git
+
+# JSON 输出（供脚本和 AI 模型使用）
+repo-do add https://github.com/user/repo.git --json
+```
+
+**`--json` 输出：**
+
+使用 `--json` 时，命令仅在 stdout 输出一行 JSON，不会有 spinner、颜色或剪贴板操作：
+
+```json
+{"success":true,"path":"/path/to/repo","alreadyExists":false,"message":""}
+```
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `success` | boolean | `true` 表示仓库路径可用（已克隆或已存在） |
+| `path` | string | 本地仓库的绝对路径 |
+| `alreadyExists` | boolean | `true` 表示仓库此前已克隆过 |
+| `message` | string | 错误或状态信息 |
+
+失败时进程以 exit code 1 退出，输出：
+```json
+{"success":false,"path":"","alreadyExists":false,"message":"错误详情"}
 ```
 
 **目录结构：**

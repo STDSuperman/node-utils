@@ -23,10 +23,11 @@ program
 program
   .command('add <url>')
   .description('Clone a git repository')
+  .option('--json', 'Output result as JSON')
   .allowUnknownOption()
   .action((url: string, options: any, command: Command) => {
     const args = command.args.slice(1);
-    addCommand(url, { args });
+    addCommand(url, { args, json: options.json });
   });
 
 program

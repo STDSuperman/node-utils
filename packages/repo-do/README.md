@@ -118,6 +118,29 @@ repo-do add https://github.com/STDSuperman/super-image-cropper.git --branch deve
 
 # SSH clone
 repo-do add git@github.com:STDSuperman/NanoBanana-PPT-Skills.git
+
+# JSON output (for scripts and AI models)
+repo-do add https://github.com/user/repo.git --json
+```
+
+**`--json` output:**
+
+When using `--json`, the command outputs a single line of JSON to stdout with no spinner, color, or clipboard side effects:
+
+```json
+{"success":true,"path":"/path/to/repo","alreadyExists":false,"message":""}
+```
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `success` | boolean | `true` if the repo path is available (cloned or already exists) |
+| `path` | string | Absolute path to the local repository |
+| `alreadyExists` | boolean | `true` if the repository was already cloned |
+| `message` | string | Error or status message |
+
+On failure, the process exits with code 1 and outputs:
+```json
+{"success":false,"path":"","alreadyExists":false,"message":"error details"}
 ```
 
 **Directory structure:**

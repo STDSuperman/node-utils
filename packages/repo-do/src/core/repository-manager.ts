@@ -8,7 +8,7 @@ import { pathGenerator } from './path-generator';
 import { ERROR_CODES } from '../constants';
 
 export class RepositoryManager {
-  async cloneRepository(url: string, cloneArgs: string[] = []): Promise<ICloneResult> {
+  async cloneRepository(url: string, cloneArgs: string[] = [], options?: { silent?: boolean }): Promise<ICloneResult> {
     const parsed = parseGitUrl(url);
     const baseDir = await configManager.getBaseDirectory();
     const targetPath = pathGenerator.generateRepoPath(baseDir, parsed);
@@ -23,7 +23,7 @@ export class RepositoryManager {
       };
     }
 
-    const result = await gitExecutor.clone(url, targetPath, cloneArgs);
+    const result = await gitExecutor.clone(url, targetPath, cloneArgs, { silent: options?.silent });
 
     if (result.success) {
       const repoInfo: IRepositoryInfo = {
