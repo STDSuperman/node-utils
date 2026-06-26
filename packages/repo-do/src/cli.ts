@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander';
+import { createRequire } from 'module';
 import { initCommand } from './commands/init';
 import { addCommand } from './commands/add';
 import { listCommand } from './commands/list';
@@ -9,12 +10,14 @@ import { removeCommand } from './commands/remove';
 import { configCommand } from './commands/config';
 import { scanCommand } from './commands/scan';
 
+const require = createRequire(import.meta.url);
+const packageJson = require('../package.json') as { version: string };
 const program = new Command();
 
 program
   .name('repo-do')
   .description('Unified git repository management tool')
-  .version('1.0.0');
+  .version(packageJson.version);
 
 program
   .command('init')

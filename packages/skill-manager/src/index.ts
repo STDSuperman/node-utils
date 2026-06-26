@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander';
+import { createRequire } from 'module';
 import { add } from './commands/add.js';
 import { list } from './commands/list.js';
 import { remove } from './commands/remove.js';
@@ -8,12 +9,14 @@ import { search } from './commands/search.js';
 import { config } from './commands/config.js';
 import { sourceAdd, sourceList, sourceRemove, sourceUpdate } from './commands/source.js';
 
+const require = createRequire(import.meta.url);
+const packageJson = require('../package.json') as { version: string };
 const program = new Command();
 
 program
   .name('skm')
   .description('Skill Manager - CLI tool for managing agent skills via symlinks')
-  .version('1.0.0');
+  .version(packageJson.version);
 
 program
   .command('add')
