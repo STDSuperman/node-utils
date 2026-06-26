@@ -29,7 +29,7 @@ export async function findCommand(prefix: string): Promise<void> {
           name: 'selectedRepo',
           message: 'Select a repository:',
           choices: repos.map(repo => ({
-            name: `${repo.domain}/${repo.group}/${repo.name}`,
+            name: `${repo.canonicalRemote ?? `${repo.domain}/${repo.group}/${repo.name}`} (${repo.fullPath})`,
             value: repo,
           })),
         },

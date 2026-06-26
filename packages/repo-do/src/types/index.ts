@@ -1,6 +1,7 @@
 export interface IGitMConfig {
   baseDirectory: string;
   version: string;
+  repositories: IConfiguredRepository[];
 }
 
 export interface IParsedGitUrl {
@@ -11,6 +12,28 @@ export interface IParsedGitUrl {
   originalUrl: string;
 }
 
+export type RepositoryLocationSource = 'clone' | 'scan' | 'adopted';
+
+export interface IRepositoryLocation {
+  path: string;
+  remoteUrl: string;
+  remoteName: string;
+  source: RepositoryLocationSource;
+  firstSeenAt: string;
+  lastSeenAt: string;
+}
+
+export interface IConfiguredRepository {
+  id: string;
+  canonicalRemote: string;
+  displayUrl: string;
+  domain: string;
+  group: string;
+  name: string;
+  preferredPath: string;
+  locations: IRepositoryLocation[];
+}
+
 export interface IRepositoryInfo {
   name: string;
   fullPath: string;
@@ -18,6 +41,7 @@ export interface IRepositoryInfo {
   domain: string;
   group: string;
   lastUpdated: Date;
+  canonicalRemote?: string;
 }
 
 export interface IRepositoryCache {
@@ -30,6 +54,7 @@ export interface ICloneResult {
   path: string;
   message: string;
   alreadyExists?: boolean;
+  adoptedExisting?: boolean;
 }
 
 export interface ICommandOptions {
@@ -38,6 +63,20 @@ export interface ICommandOptions {
   set?: boolean;
   exact?: boolean;
   refresh?: boolean;
+}
+
+export interface ICloneOptions {
+  silent?: boolean;
+  useExisting?: boolean;
+  forceClone?: boolean;
+}
+
+export interface IScanResult {
+  scanned: number;
+  added: number;
+  updated: number;
+  skipped: number;
+  repositories: IConfiguredRepository[];
 }
 
 export interface IFindResult {

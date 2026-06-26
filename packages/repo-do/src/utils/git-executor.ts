@@ -31,6 +31,37 @@ export class GitExecutor {
     return this.execute('git', cloneArgs, options?.silent);
   }
 
+  async isGitRepository(repoPath: string, options?: { silent?: boolean }): Promise<boolean> {
+    const result = await this.execute('git', ['-C', repoPath, 'rev-parse', '--is-inside-work-tree'], options?.silent ?? true);
+    return result.success && result.stdout.trim() === 'true';
+  }
+
+  async getRemoteUrl(repoPath: string, remoteName: string = 'origin', options?: { silent?: boolean }): Promise<string | undefined> {
+    const result = await this.execute('git', ['-C', repoPath, 'remote', 'get-url', remoteName], options?.silent ?? true);
+    return result.success ? result.stdout.trim() : undefined;
+  }
+
+  async getRemoteUrls(repoPath: string, options?: { silent?: boolean }): Promise<Array<{ name: string; url: string }>> {
+    const remotesResult = await this.execute('git', ['-C', repoPath, 'remote'], options?.silent ?? true);
+    if (!remotesResult.success) return [];
+
+    const remoteNames = remotesResult.stdout
+      .split('\n')
+      .map(remote => remote.trim())
+      .filter(Boolean);
+
+    const remotes: Array<{ name: string; url: string }> = [];
+
+    for (const remoteName of remoteNames) {
+      const remoteUrl = await this.getRemoteUrl(repoPath, remoteName, options);
+      if (remoteUrl) {
+        remotes.push({ name: remoteName, url: remoteUrl });
+      }
+    }
+
+    return remotes;
+  }
+
   private async execute(command: string, args: string[], silent?: boolean): Promise<IExecuteResult> {
     return new Promise((resolve, reject) => {
       const child = spawn(command, args, {

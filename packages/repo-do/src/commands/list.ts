@@ -1,6 +1,5 @@
 import { repositoryManager } from '../core/repository-manager';
 import { logger } from '../utils/logger';
-import { configManager } from '../core/config-manager';
 
 export async function listCommand(options: { refresh?: boolean }): Promise<void> {
   try {
@@ -13,10 +12,17 @@ export async function listCommand(options: { refresh?: boolean }): Promise<void>
       return;
     }
 
-    const baseDir = await configManager.getBaseDirectory();
+    const repoCounts = new Map<string, number>();
 
     repos.forEach(repo => {
-      console.log(`${repo.domain}/${repo.group}/${repo.name}`);
+      const key = repo.canonicalRemote ?? `${repo.domain}/${repo.group}/${repo.name}`;
+      repoCounts.set(key, (repoCounts.get(key) ?? 0) + 1);
+    });
+
+    repos.forEach(repo => {
+      const key = repo.canonicalRemote ?? `${repo.domain}/${repo.group}/${repo.name}`;
+      const hasMultipleLocations = (repoCounts.get(key) ?? 0) > 1;
+      console.log(hasMultipleLocations ? `${key} (${repo.fullPath})` : key);
     });
 
     console.log(`\nTotal: ${repos.length} repositories`);

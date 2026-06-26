@@ -1,6 +1,6 @@
 {
   "name": "skill-manager",
-  "version": "1.4.2",
+  "version": "1.5.0",
   "description": "CLI tool for managing agent skills via symlinks",
   "type": "module",
   "main": "dist/index.js",
@@ -11,9 +11,9 @@
     "node": ">=18.0.0"
   },
   "scripts": {
-    "build": "rollup -c",
+    "build": "rollup -c --forceExit",
     "dev": "tsx src/index.ts",
-    "test": "vitest"
+    "test": "vitest run --passWithNoTests"
   },
   "files": [
     "dist",

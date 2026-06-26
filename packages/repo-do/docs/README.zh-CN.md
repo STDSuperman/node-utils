@@ -119,7 +119,15 @@ repo-do add git@github.com:STDSuperman/NanoBanana-PPT-Skills.git
 
 # JSON 输出（供脚本和 AI 模型使用）
 repo-do add https://github.com/user/repo.git --json
+
+# 即使同一个远端仓库已被记录，也强制克隆一份新的
+repo-do add https://github.com/user/repo.git --force-clone
+
+# 不询问，直接采用已记录的本地仓库
+repo-do add https://github.com/user/repo.git --use-existing
 ```
+
+克隆前，`repo-do` 会先查询全局仓库配置。`git@github.com:user/repo.git` 和 `https://github.com/user/repo` 这类 SSH/HTTPS 地址会被识别为同一个远端仓库。如果同一个远端已经存在于其他本地目录，交互模式会询问是否直接采用已有目录；`--json` 模式默认直接采用已有目录，除非传入 `--force-clone`。
 
 **`--json` 输出：**
 
@@ -134,6 +142,7 @@ repo-do add https://github.com/user/repo.git --json
 | `success` | boolean | `true` 表示仓库路径可用（已克隆或已存在） |
 | `path` | string | 本地仓库的绝对路径 |
 | `alreadyExists` | boolean | `true` 表示仓库此前已克隆过 |
+| `adoptedExisting` | boolean | `true` 表示采用了其他目录里的已有仓库 |
 | `message` | string | 错误或状态信息 |
 
 失败时进程以 exit code 1 退出，输出：
@@ -184,6 +193,22 @@ repo-do list
 repo-do list --refresh
 ```
 
+使用 `--refresh` 时，`repo-do` 会扫描已配置的基础目录，将检测到的 Git 仓库写入配置，并重建快速缓存。
+
+### `repo-do scan [paths...]`
+
+扫描已有 Git 仓库并写入配置。
+
+```bash
+# 扫描配置里的基础目录
+repo-do scan
+
+# 扫描一个或多个自定义目录
+repo-do scan ~/Code ~/work
+```
+
+扫描到的仓库会按规范化后的远端地址归档。如果同一个远端仓库存在多份本地目录，这些目录会作为同一个仓库的多个 location 维护。
+
 ### `repo-do remove <repo>`
 
 从追踪中移除仓库（不会删除文件）。
@@ -232,7 +257,28 @@ repo-do config --set baseDirectory /path/to/repos
 ```json
 {
   "baseDirectory": "D:\\Code",
-  "version": "1.0.0"
+  "version": "1.0.0",
+  "repositories": [
+    {
+      "id": "github.com/STDSuperman/super-image-cropper",
+      "canonicalRemote": "github.com/STDSuperman/super-image-cropper",
+      "displayUrl": "git@github.com:STDSuperman/super-image-cropper.git",
+      "domain": "github.com",
+      "group": "STDSuperman",
+      "name": "super-image-cropper",
+      "preferredPath": "D:\\Code\\github.com\\STDSuperman\\super-image-cropper",
+      "locations": [
+        {
+          "path": "D:\\Code\\github.com\\STDSuperman\\super-image-cropper",
+          "remoteUrl": "git@github.com:STDSuperman/super-image-cropper.git",
+          "remoteName": "origin",
+          "source": "clone",
+          "firstSeenAt": "2026-01-11T12:00:00.000Z",
+          "lastSeenAt": "2026-01-11T12:00:00.000Z"
+        }
+      ]
+    }
+  ]
 }
 ```
 
@@ -291,6 +337,7 @@ repo-do config --set baseDirectory /path/to/repos
 - **NOT_FOUND**：在缓存中未找到仓库
 - **PERMISSION_DENIED**：文件系统权限错误
 - **GIT_NOT_INSTALLED**：未安装 Git
+- **PATH_CONFLICT**：目标路径已存在，但不是请求的仓库
 
 ## 开发
 

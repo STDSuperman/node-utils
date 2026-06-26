@@ -1,5 +1,5 @@
 import { repositoryManager } from './core/repository-manager';
-import { ICloneResult, IFindResult, IRepositoryInfo } from './types';
+import { ICloneOptions, ICloneResult, IFindResult, IRepositoryInfo, IScanResult } from './types';
 
 /**
  * Add a repository programmatically
@@ -7,8 +7,8 @@ import { ICloneResult, IFindResult, IRepositoryInfo } from './types';
  * @param options - Options with optional clone arguments
  * @returns Clone result with path and status
  */
-export async function add(url: string, options: { cloneArgs?: string[] } = {}): Promise<ICloneResult> {
-  return repositoryManager.cloneRepository(url, options.cloneArgs || []);
+export async function add(url: string, options: { cloneArgs?: string[] } & ICloneOptions = {}): Promise<ICloneResult> {
+  return repositoryManager.cloneRepository(url, options.cloneArgs || [], options);
 }
 
 /**
@@ -37,6 +37,25 @@ export async function remove(identifier: string): Promise<void> {
   return repositoryManager.removeRepository(identifier);
 }
 
+/**
+ * Scan existing repositories and add them to configuration
+ * @param paths - Directories to scan. Defaults to the configured base directory.
+ * @returns Scan summary
+ */
+export async function scan(paths?: string[]): Promise<IScanResult> {
+  return repositoryManager.scanRepositories(paths);
+}
+
 // Export types for TypeScript users
-export type { ICloneResult, IFindResult, IRepositoryInfo, IGitMConfig, IParsedGitUrl } from './types';
+export type {
+  ICloneOptions,
+  ICloneResult,
+  IConfiguredRepository,
+  IFindResult,
+  IGitMConfig,
+  IParsedGitUrl,
+  IRepositoryInfo,
+  IRepositoryLocation,
+  IScanResult,
+} from './types';
 export { GitMError } from './types';

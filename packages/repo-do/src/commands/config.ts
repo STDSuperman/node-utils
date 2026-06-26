@@ -24,6 +24,7 @@ export async function configCommand(options: { get?: string; set?: string; value
       const config = await configManager.loadConfig();
       logger.info('Current configuration:');
       console.log(`  Base directory: ${config.baseDirectory}`);
+      console.log(`  Tracked repositories: ${config.repositories.length}`);
       console.log(`  Version: ${config.version}`);
     }
   } catch (error) {

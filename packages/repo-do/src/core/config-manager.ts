@@ -19,7 +19,12 @@ export class ConfigManager {
     try {
       await this.ensureConfigDir();
       const content = await fs.readFile(CONFIG_FILE, 'utf-8');
-      return JSON.parse(content) as IGitMConfig;
+      const config = JSON.parse(content) as Partial<IGitMConfig>;
+      return {
+        ...this.getDefaultConfig(),
+        ...config,
+        repositories: config.repositories ?? [],
+      };
     } catch (error) {
       if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
         return this.getDefaultConfig();
@@ -78,6 +83,7 @@ export class ConfigManager {
     return {
       baseDirectory: DEFAULT_BASE_DIR,
       version: CONFIG_VERSION,
+      repositories: [],
     };
   }
 }

@@ -20,7 +20,7 @@ export async function removeCommand(identifier: string): Promise<void> {
           name: 'selectedRepo',
           message: 'Multiple repositories found. Select one to remove:',
           choices: repos.map(repo => ({
-            name: `${repo.domain}/${repo.group}/${repo.name} (${repo.fullPath})`,
+            name: `${repo.canonicalRemote ?? `${repo.domain}/${repo.group}/${repo.name}`} (${repo.fullPath})`,
             value: repo,
           })),
         },

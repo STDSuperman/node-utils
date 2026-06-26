@@ -25,6 +25,8 @@ English · [简体中文](./docs/README.zh-CN.md)
 - **Fast Repository Search**: Quickly find repositories by name or path fragments
 - **Clipboard Integration**: Automatically copy `cd` commands to clipboard
 - **Cache-Based Performance**: Fast repository listing without repeated directory scans
+- **Existing Repository Detection**: Track existing clones by remote URL and reuse them before cloning duplicates
+- **Multi-Location Tracking**: Keep multiple local directories for the same remote repository when needed
 - **Cross-Platform**: Works on Windows, macOS, and Linux
 - **Git Clone Pass-through**: Support all git clone arguments (--depth, --branch, etc.)
 
@@ -121,7 +123,15 @@ repo-do add git@github.com:STDSuperman/NanoBanana-PPT-Skills.git
 
 # JSON output (for scripts and AI models)
 repo-do add https://github.com/user/repo.git --json
+
+# Force a new clone even if the same remote is already tracked
+repo-do add https://github.com/user/repo.git --force-clone
+
+# Use an already tracked local repository without prompting
+repo-do add https://github.com/user/repo.git --use-existing
 ```
+
+Before cloning, `repo-do` checks the global repository configuration for the same remote repository. SSH and HTTPS remotes such as `git@github.com:user/repo.git` and `https://github.com/user/repo` are treated as the same repository. If a matching repository already exists in another local directory, interactive mode asks whether to use the existing directory. `--json` mode uses the existing directory automatically unless `--force-clone` is provided.
 
 **`--json` output:**
 
@@ -136,6 +146,7 @@ When using `--json`, the command outputs a single line of JSON to stdout with no
 | `success` | boolean | `true` if the repo path is available (cloned or already exists) |
 | `path` | string | Absolute path to the local repository |
 | `alreadyExists` | boolean | `true` if the repository was already cloned |
+| `adoptedExisting` | boolean | `true` if an existing repository in a different location was used |
 | `message` | string | Error or status message |
 
 On failure, the process exits with code 1 and outputs:
@@ -186,6 +197,22 @@ repo-do list
 repo-do list --refresh
 ```
 
+When `--refresh` is used, `repo-do` scans the configured base directory, records detected Git repositories in configuration, and rebuilds the fast repository cache.
+
+### `repo-do scan [paths...]`
+
+Scan existing Git repositories and track them in configuration.
+
+```bash
+# Scan the configured base directory
+repo-do scan
+
+# Scan one or more custom directories
+repo-do scan ~/Code ~/work
+```
+
+Detected repositories are grouped by normalized remote URL. If the same remote exists in multiple local directories, all directories are stored as locations for that repository.
+
 ### `repo-do remove <repo>`
 
 Remove a repository from tracking (does not delete files).
@@ -234,7 +261,28 @@ Configuration is stored in `~/.repo-do/config.json`:
 ```json
 {
   "baseDirectory": "D:\\Code",
-  "version": "1.0.0"
+  "version": "1.0.0",
+  "repositories": [
+    {
+      "id": "github.com/STDSuperman/super-image-cropper",
+      "canonicalRemote": "github.com/STDSuperman/super-image-cropper",
+      "displayUrl": "git@github.com:STDSuperman/super-image-cropper.git",
+      "domain": "github.com",
+      "group": "STDSuperman",
+      "name": "super-image-cropper",
+      "preferredPath": "D:\\Code\\github.com\\STDSuperman\\super-image-cropper",
+      "locations": [
+        {
+          "path": "D:\\Code\\github.com\\STDSuperman\\super-image-cropper",
+          "remoteUrl": "git@github.com:STDSuperman/super-image-cropper.git",
+          "remoteName": "origin",
+          "source": "clone",
+          "firstSeenAt": "2026-01-11T12:00:00.000Z",
+          "lastSeenAt": "2026-01-11T12:00:00.000Z"
+        }
+      ]
+    }
+  ]
 }
 ```
 
@@ -293,6 +341,7 @@ All paths are handled using Node.js `path` module for cross-platform compatibili
 - **NOT_FOUND**: Repository not found in cache
 - **PERMISSION_DENIED**: File system permission error
 - **GIT_NOT_INSTALLED**: Git is not installed
+- **PATH_CONFLICT**: Target path exists but is not the requested repository
 
 ## Development
 

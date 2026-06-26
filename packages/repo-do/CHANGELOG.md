@@ -1,5 +1,11 @@
 # repo-do
 
+## 1.3.0
+
+### Minor Changes
+
+- Add existing repository scanning and remote-based multi-location tracking.
+
 ## 1.2.1
 
 ### Patch Changes

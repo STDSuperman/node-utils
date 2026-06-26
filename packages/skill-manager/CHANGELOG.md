@@ -1,5 +1,16 @@
 # skill-manager
 
+## 1.5.0
+
+### Minor Changes
+
+- ffcf3f1: Add Codex skill support using the `.agents/skills` convention.
+
+### Patch Changes
+
+- Updated dependencies
+  - repo-do@1.3.0
+
 ## 1.4.2
 
 ### Patch Changes
