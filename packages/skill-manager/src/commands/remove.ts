@@ -8,6 +8,7 @@ import { Skill } from '../types/index.js';
 export async function remove() {
   // Scan all skill type directories
   const targetDirMap: Record<string, string> = {
+    codex: '.agents/skills',
     claude: '.claude/skills',
     opencode: '.opencode/skills',
     openclaw: '.openclaw/skills'

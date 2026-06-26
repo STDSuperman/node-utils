@@ -20,6 +20,7 @@ export async function add(options: AddOptions = {}) {
       name: 'skillType',
       message: 'Select skill type:',
       choices: [
+        { name: 'Codex Skills', value: 'codex' },
         { name: 'Claude Skills', value: 'claude' },
         { name: 'OpenCode Skills', value: 'opencode' },
         { name: 'OpenClaw Skills', value: 'openclaw' }
@@ -31,12 +32,14 @@ export async function add(options: AddOptions = {}) {
 
   // Determine target directory based on skill type and global flag
   const targetDirMap: Record<string, string> = {
+    codex: '.agents/skills',
     claude: '.claude/skills',
     opencode: '.opencode/skills',
     openclaw: '.openclaw/skills'
   };
 
   const globalTargetDirMap: Record<string, string> = {
+    codex: path.join(os.homedir(), '.agents/skills'),
     claude: path.join(os.homedir(), '.claude/skills'),
     opencode: path.join(os.homedir(), '.opencode/skills'),
     openclaw: path.join(os.homedir(), '.openclaw/skills')
@@ -65,7 +68,7 @@ export async function add(options: AddOptions = {}) {
 
   if (skills.length === 0) {
     spinner.fail('No skills found');
-    logger.info(`Make sure your source directories contain skills/ or .${skillType}/skills/ subdirectories`);
+    logger.info(`Make sure your source directories contain skills/ or ${targetDir} subdirectories`);
     return;
   }
 

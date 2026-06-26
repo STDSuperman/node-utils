@@ -1,4 +1,4 @@
-export type SkillType = 'universal' | 'claude' | 'opencode' | 'openclaw';
+export type SkillType = 'universal' | 'codex' | 'claude' | 'opencode' | 'openclaw';
 
 export interface Skill {
   name: string;

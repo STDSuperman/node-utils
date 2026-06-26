@@ -12,13 +12,13 @@ const program = new Command();
 
 program
   .name('skm')
-  .description('Skill Manager - CLI tool for managing Claude Code skills via symlinks')
+  .description('Skill Manager - CLI tool for managing agent skills via symlinks')
   .version('1.0.0');
 
 program
   .command('add')
-  .description('Interactively add skills to current project (.claude/skills) or globally (--global)')
-  .option('-g, --global', 'Install skills to global directory (~/.claude/skills, ~/.opencode/skills, or ~/.openclaw/skills)')
+  .description('Interactively add skills to a project skill directory or globally (--global)')
+  .option('-g, --global', 'Install skills to a global directory (~/.agents/skills, ~/.claude/skills, ~/.opencode/skills, or ~/.openclaw/skills)')
   .action(add);
 
 program
@@ -29,7 +29,7 @@ program
 
 program
   .command('remove')
-  .description('Remove skills from current project (.claude/skills)')
+  .description('Remove skills from current project skill directories')
   .alias('rm')
   .action(remove);
 

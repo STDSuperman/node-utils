@@ -19,7 +19,7 @@ rpd --help
 ```
 
 ### 📦 [skill-manager](./packages/skill-manager)
-CLI tool for managing Claude Code skills via symlinks
+CLI tool for managing agent skills via symlinks
 
 **Install:**
 ```bash
@@ -59,7 +59,7 @@ pnpm test
 repo-do-workspace/
 ├── packages/
 │   ├── repo-do/          # Git repository management CLI
-│   └── skill-manager/    # Claude Code skills manager
+│   └── skill-manager/    # Agent skills manager
 ├── pnpm-workspace.yaml
 └── package.json
 ```

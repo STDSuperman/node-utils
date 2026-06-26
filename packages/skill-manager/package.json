@@ -1,7 +1,7 @@
 {
   "name": "skill-manager",
   "version": "1.4.2",
-  "description": "CLI tool for managing Claude Code skills via symlinks",
+  "description": "CLI tool for managing agent skills via symlinks",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
@@ -21,7 +21,9 @@
     "README.md"
   ],
   "keywords": [
+    "codex",
     "claude",
+    "agent-skills",
     "skills",
     "cli",
     "symlink",

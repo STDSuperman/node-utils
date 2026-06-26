@@ -5,6 +5,7 @@ import { Skill, SkillType } from '../types/index.js';
 // Define skill directories to scan with their corresponding types
 const SKILL_DIRS_CONFIG = [
   { dir: 'skills', type: 'universal' as SkillType },
+  { dir: '.agents/skills', type: 'codex' as SkillType },
   { dir: '.claude/skills', type: 'claude' as SkillType },
   { dir: '.opencode/skills', type: 'opencode' as SkillType },
   { dir: '.openclaw/skills', type: 'openclaw' as SkillType }
@@ -60,7 +61,7 @@ export function discoverSkills(sources: string[]): Skill[] {
   return skills;
 }
 
-export function getLocalSkills(targetDir: string = '.claude/skills'): Skill[] {
+export function getLocalSkills(targetDir: string = '.agents/skills'): Skill[] {
   const localPath = path.resolve(targetDir);
 
   if (!fs.existsSync(localPath)) {

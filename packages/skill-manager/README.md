@@ -1,6 +1,6 @@
 # Skill Manager (skm)
 
-CLI tool for managing Claude Code skills via directory symlinks.
+CLI tool for managing agent skills via directory symlinks.
 
 ## Features
 
@@ -9,7 +9,7 @@ CLI tool for managing Claude Code skills via directory symlinks.
 - 🎯 **Interactive selection** with multi-select interface
 - ⚙️ **Source management** - configure multiple skill repositories
 - 🌐 **GitHub URL support** - automatically clone GitHub repositories
-- 📂 **Multi-type skills** - support for universal and platform-specific skills
+- 📂 **Multi-type skills** - support for universal and platform-specific skills, including Codex
 - 🪟 **Cross-platform** with Windows fallback (copy if symlink fails)
 
 ## Installation
@@ -68,7 +68,7 @@ skm add
 This will:
 - Scan all configured sources for skills
 - Show an interactive multi-select list
-- Create symlinks in `./.claude/skills/` for selected skills
+- Create symlinks in the selected project skill directory (Codex uses `./.agents/skills/`)
 
 ### 5. Search for specific skills
 ```bash
@@ -96,16 +96,19 @@ Your source directories should contain any of these supported skill directories:
 my-skills-repo/
 └── skills/
     ├── skill-one/
-    │   └── skill.md
+    │   └── SKILL.md
     ├── skill-two/
-    │   └── skill.md
+    │   └── SKILL.md
     └── another-skill/
-        └── skill.md
+        └── SKILL.md
 ```
 
 **Platform-Specific Skills**
 ```
 my-skills-repo/
+├── .agents/skills/       # Only for Codex
+│   ├── codex-skill-one/
+│   └── codex-skill-two/
 ├── .claude/skills/       # Only for Claude
 │   ├── claude-skill-one/
 │   └── claude-skill-two/
@@ -117,11 +120,11 @@ my-skills-repo/
     └── openclaw-skill-two/
 ```
 
-**Directory name = Skill name**. When you add a skill, the entire directory is symlinked to your project.
+**Directory name = Skill name**. When you add a skill, the entire directory is symlinked to your project. For Codex and the open agent skills convention, each skill directory should contain `SKILL.md`.
 
 **Skill Types:**
-- **Universal** (`skills/`) - Available for all platforms (Claude, OpenCode, OpenClaw)
-- **Platform-specific** (`.claude/skills/`, `.opencode/skills/`, `.openclaw/skills/`) - Only available for the corresponding platform
+- **Universal** (`skills/`) - Available for all platforms (Codex, Claude, OpenCode, OpenClaw)
+- **Platform-specific** (`.agents/skills/`, `.claude/skills/`, `.opencode/skills/`, `.openclaw/skills/`) - Only available for the corresponding platform
 
 ## Configuration
 
@@ -143,7 +146,7 @@ Configuration is stored in `.skmrc.json` (project root or home directory).
 ### Main Commands
 
 #### `skm add`
-Interactively select and add skills to current project's `.claude/skills/` directory.
+Interactively select and add skills to the selected current project skill directory.
 - No arguments needed
 - Scans all configured sources
 - Creates directory symlinks
@@ -152,7 +155,7 @@ Interactively select and add skills to current project's `.claude/skills/` direc
 Display all discoverable skills from configured sources, grouped by source.
 
 #### `skm remove` (alias: `rm`)
-Select and remove skills from current project's `.claude/skills/` directory.
+Select and remove skills from current project skill directories.
 - Scans current project only
 - Interactive multi-select
 - Confirmation before deletion
@@ -208,10 +211,10 @@ skm source update --interactive
 
 1. **Source Configuration**: You configure source directories using `skm source add` (supports local paths and GitHub URLs)
 2. **GitHub Cloning**: If source is a GitHub URL, skm automatically clones it using repo-do
-3. **Skill Discovery**: skm scans `skills/`, `.claude/skills/`, `.opencode/skills/`, and `.openclaw/skills/` subdirectories
+3. **Skill Discovery**: skm scans `skills/`, `.agents/skills/`, `.claude/skills/`, `.opencode/skills/`, and `.openclaw/skills/` subdirectories
 4. **Type-Based Filtering**: Universal skills (`skills/`) work on all platforms, platform-specific skills only on their respective platforms
 5. **Directory Linking**: When you add a skill, the entire skill directory is symlinked (not individual files)
-6. **Project Isolation**: Each project has its own `.claude/skills/` with symlinks to selected skills
+6. **Project Isolation**: Each project has its own platform skill directory (Codex uses `.agents/skills/`) with symlinks to selected skills
 7. **Easy Updates**: Update source repositories with `skm source update`, changes reflect in all projects via symlinks
 
 ## Example Workflow
@@ -223,7 +226,7 @@ skm source add ~/my-skills-library
 # In any project
 cd ~/my-project
 skm add                    # Select skills to add
-# Work with skills in .claude/skills/
+# Work with Codex skills in .agents/skills/
 
 # Later, remove unused skills
 skm remove                 # Select skills to remove
