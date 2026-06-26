@@ -1,6 +1,6 @@
 {
   "name": "skill-manager",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "CLI tool for managing agent skills via symlinks",
   "type": "module",
   "main": "dist/index.js",

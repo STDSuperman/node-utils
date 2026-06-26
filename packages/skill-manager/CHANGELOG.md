@@ -1,5 +1,13 @@
 # skill-manager
 
+## 1.5.1
+
+### Patch Changes
+
+- Read CLI version output from package metadata.
+- Updated dependencies
+  - repo-do@1.3.1
+
 ## 1.5.0
 
 ### Minor Changes

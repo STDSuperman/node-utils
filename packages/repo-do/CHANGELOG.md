@@ -1,5 +1,11 @@
 # repo-do
 
+## 1.3.1
+
+### Patch Changes
+
+- Read CLI version output from package metadata.
+
 ## 1.3.0
 
 ### Minor Changes
