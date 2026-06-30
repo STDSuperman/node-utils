@@ -6,7 +6,7 @@
 以一致的、基于域名的结构组织你的所有仓库。
 快速搜索、剪贴板集成、跨平台支持。
 
-[English](../README.md) · 简体中文
+[English](https://github.com/STDSuperman/node-utils/blob/master/packages/repo-do/README.md) · 简体中文
 
 [![npm 版本](https://img.shields.io/npm/v/repo-do.svg?style=flat-square)](https://www.npmjs.com/package/repo-do)
 [![许可证](https://img.shields.io/npm/l/repo-do.svg?style=flat-square)](https://github.com/STDSuperman/repo-do/blob/master/LICENSE)
@@ -34,12 +34,14 @@
 npm install -g repo-do
 ```
 
+> **命令别名**：`rpd` 和 `repo-do` 等价。下面的示例优先使用更短的 `rpd`。
+
 ## 快速开始
 
 ### 1. 初始化配置
 
 ```bash
-repo-do init
+rpd init
 ```
 
 这将提示你设置存储仓库的基础目录（默认：`~/.repo-do/repo`）。
@@ -47,7 +49,7 @@ repo-do init
 ### 2. 克隆仓库
 
 ```bash
-repo-do add git@github.com:STDSuperman/super-image-cropper.git
+rpd add git@github.com:STDSuperman/super-image-cropper.git
 ```
 
 仓库将被克隆到：
@@ -60,7 +62,7 @@ repo-do add git@github.com:STDSuperman/super-image-cropper.git
 ### 3. 查找仓库
 
 ```bash
-repo-do find super-image
+rpd find super-image
 ```
 
 输出：
@@ -72,7 +74,7 @@ repo-do find super-image
 ### 4. 列出所有仓库
 
 ```bash
-repo-do list
+rpd list
 ```
 
 输出：
@@ -86,15 +88,15 @@ gitlab.com/myorg/internal-tool
 
 ## 命令
 
-### `repo-do init`
+### `rpd init` / `repo-do init`
 
 初始化配置并设置仓库的基础目录。
 
 ```bash
-repo-do init
+rpd init
 ```
 
-### `repo-do add <repo_url> [git-clone-args...]`
+### `rpd add <repo_url> [git-clone-args...]` / `repo-do add <repo_url> [git-clone-args...]`
 
 克隆仓库到结构化目录。
 
@@ -106,25 +108,25 @@ repo-do init
 
 ```bash
 # 基础克隆
-repo-do add git@github.com:STDSuperman/super-image-cropper.git
+rpd add git@github.com:STDSuperman/super-image-cropper.git
 
 # 浅克隆
-repo-do add https://github.com/STDSuperman/super-image-cropper.git --depth 1
+rpd add https://github.com/STDSuperman/super-image-cropper.git --depth 1
 
 # 克隆指定分支
-repo-do add https://github.com/STDSuperman/super-image-cropper.git --branch develop
+rpd add https://github.com/STDSuperman/super-image-cropper.git --branch develop
 
 # SSH 克隆
-repo-do add git@github.com:STDSuperman/NanoBanana-PPT-Skills.git
+rpd add git@github.com:STDSuperman/NanoBanana-PPT-Skills.git
 
 # JSON 输出（供脚本和 AI 模型使用）
-repo-do add https://github.com/user/repo.git --json
+rpd add https://github.com/user/repo.git --json
 
 # 即使同一个远端仓库已被记录，也强制克隆一份新的
-repo-do add https://github.com/user/repo.git --force-clone
+rpd add https://github.com/user/repo.git --force-clone
 
 # 不询问，直接采用已记录的本地仓库
-repo-do add https://github.com/user/repo.git --use-existing
+rpd add https://github.com/user/repo.git --use-existing
 ```
 
 克隆前，`repo-do` 会先查询全局仓库配置。`git@github.com:user/repo.git` 和 `https://github.com/user/repo` 这类 SSH/HTTPS 地址会被识别为同一个远端仓库。如果同一个远端已经存在于其他本地目录，交互模式会询问是否直接采用已有目录；`--json` 模式默认直接采用已有目录，除非传入 `--force-clone`。
@@ -162,14 +164,14 @@ repo-do add https://github.com/user/repo.git --use-existing
         └── internal-tool/
 ```
 
-### `repo-do find <query>`
+### `rpd find <query>` / `repo-do find <query>`
 
 通过名称、组织或路径片段搜索仓库（不区分大小写）。
 
 ```bash
-repo-do find super-image
-repo-do find STDSuperman
-repo-do find github.com
+rpd find super-image
+rpd find STDSuperman
+rpd find github.com
 ```
 
 **输出格式：**
@@ -181,57 +183,57 @@ repo-do find github.com
 
 每个结果前都有序号，后面是仓库的绝对路径。
 
-### `repo-do list [--refresh]`
+### `rpd list [--refresh]` / `repo-do list [--refresh]`
 
 列出所有管理的仓库。
 
 ```bash
 # 从缓存列出（快速）
-repo-do list
+rpd list
 
 # 强制重建缓存
-repo-do list --refresh
+rpd list --refresh
 ```
 
 使用 `--refresh` 时，`repo-do` 会扫描已配置的基础目录，将检测到的 Git 仓库写入配置，并重建快速缓存。
 
-### `repo-do scan [paths...]`
+### `rpd scan [paths...]` / `repo-do scan [paths...]`
 
 扫描已有 Git 仓库并写入配置。
 
 ```bash
 # 扫描配置里的基础目录
-repo-do scan
+rpd scan
 
 # 扫描一个或多个自定义目录
-repo-do scan ~/Code ~/work
+rpd scan ~/Code ~/work
 ```
 
 扫描到的仓库会按规范化后的远端地址归档。如果同一个远端仓库存在多份本地目录，这些目录会作为同一个仓库的多个 location 维护。
 
-### `repo-do remove <repo>`
+### `rpd remove <repo>` / `repo-do remove <repo>`
 
 从追踪中移除仓库（不会删除文件）。
 
 ```bash
-repo-do remove super-image
+rpd remove super-image
 ```
 
 如果找到多个匹配项，会提示你选择要移除的仓库。
 
-### `repo-do config [options]`
+### `rpd config [options]` / `repo-do config [options]`
 
 查看或修改配置。
 
 ```bash
 # 显示当前配置
-repo-do config
+rpd config
 
 # 获取基础目录
-repo-do config --get baseDirectory
+rpd config --get baseDirectory
 
 # 设置基础目录
-repo-do config --set baseDirectory /path/to/repos
+rpd config --set baseDirectory /path/to/repos
 ```
 
 ## 目录结构
@@ -287,9 +289,9 @@ repo-do config --set baseDirectory /path/to/repos
 为了提高性能，`repo-do` 在 `~/.repo-do/repo_cache.json` 维护了一个仓库缓存。
 
 **缓存会在以下情况自动更新：**
-- 添加新仓库（`repo-do add`）
-- 移除仓库（`repo-do remove`）
-- 强制刷新（`repo-do list --refresh`）
+- 添加新仓库（`rpd add` / `repo-do add`）
+- 移除仓库（`rpd remove` / `repo-do remove`）
+- 强制刷新（`rpd list --refresh` / `repo-do list --refresh`）
 
 **缓存格式：**
 ```json

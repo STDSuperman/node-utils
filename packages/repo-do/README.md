@@ -6,7 +6,7 @@ A unified CLI tool for managing git repositories with a structured directory lay
 Organize all your repositories in a consistent domain-based structure.
 Fast search, clipboard integration, and cross-platform support.
 
-English · [简体中文](./docs/README.zh-CN.md)
+English · [简体中文](https://github.com/STDSuperman/node-utils/blob/master/packages/repo-do/docs/README.zh-CN.md)
 
 [![npm version](https://img.shields.io/npm/v/repo-do.svg?style=flat-square)](https://www.npmjs.com/package/repo-do)
 [![license](https://img.shields.io/npm/l/repo-do.svg?style=flat-square)](https://github.com/STDSuperman/repo-do/blob/master/LICENSE)
@@ -36,14 +36,14 @@ English · [简体中文](./docs/README.zh-CN.md)
 npm install -g repo-do
 ```
 
-> **Tip**: After installation, you can use the shorter command `rpd` instead of `repo-do` for faster typing!
+> **Command aliases**: `rpd` and `repo-do` are equivalent. The examples below prefer the shorter `rpd` alias.
 
 ## Quick Start
 
 ### 1. Initialize Configuration
 
 ```bash
-repo-do init
+rpd init
 ```
 
 This prompts you to set a base directory for storing repositories (default: `~/.repo-do/repo`).
@@ -51,7 +51,7 @@ This prompts you to set a base directory for storing repositories (default: `~/.
 ### 2. Clone a Repository
 
 ```bash
-repo-do add git@github.com:STDSuperman/super-image-cropper.git
+rpd add git@github.com:STDSuperman/super-image-cropper.git
 ```
 
 The repository will be cloned to:
@@ -64,7 +64,7 @@ The `cd` command is automatically copied to your clipboard!
 ### 3. Find a Repository
 
 ```bash
-repo-do find super-image
+rpd find super-image
 ```
 
 Output:
@@ -76,7 +76,7 @@ Found 1 repository:
 ### 4. List All Repositories
 
 ```bash
-repo-do list
+rpd list
 ```
 
 Output:
@@ -90,15 +90,15 @@ Total: 3 repositories
 
 ## Commands
 
-### `repo-do init`
+### `rpd init` / `repo-do init`
 
 Initialize configuration and set the base directory for repositories.
 
 ```bash
-repo-do init
+rpd init
 ```
 
-### `repo-do add <repo_url> [git-clone-args...]`
+### `rpd add <repo_url> [git-clone-args...]` / `repo-do add <repo_url> [git-clone-args...]`
 
 Clone a repository to the structured directory.
 
@@ -110,25 +110,25 @@ Clone a repository to the structured directory.
 
 ```bash
 # Basic clone
-repo-do add git@github.com:STDSuperman/super-image-cropper.git
+rpd add git@github.com:STDSuperman/super-image-cropper.git
 
 # Shallow clone
-repo-do add https://github.com/STDSuperman/super-image-cropper.git --depth 1
+rpd add https://github.com/STDSuperman/super-image-cropper.git --depth 1
 
 # Clone specific branch
-repo-do add https://github.com/STDSuperman/super-image-cropper.git --branch develop
+rpd add https://github.com/STDSuperman/super-image-cropper.git --branch develop
 
 # SSH clone
-repo-do add git@github.com:STDSuperman/NanoBanana-PPT-Skills.git
+rpd add git@github.com:STDSuperman/NanoBanana-PPT-Skills.git
 
 # JSON output (for scripts and AI models)
-repo-do add https://github.com/user/repo.git --json
+rpd add https://github.com/user/repo.git --json
 
 # Force a new clone even if the same remote is already tracked
-repo-do add https://github.com/user/repo.git --force-clone
+rpd add https://github.com/user/repo.git --force-clone
 
 # Use an already tracked local repository without prompting
-repo-do add https://github.com/user/repo.git --use-existing
+rpd add https://github.com/user/repo.git --use-existing
 ```
 
 Before cloning, `repo-do` checks the global repository configuration for the same remote repository. SSH and HTTPS remotes such as `git@github.com:user/repo.git` and `https://github.com/user/repo` are treated as the same repository. If a matching repository already exists in another local directory, interactive mode asks whether to use the existing directory. `--json` mode uses the existing directory automatically unless `--force-clone` is provided.
@@ -166,14 +166,14 @@ On failure, the process exits with code 1 and outputs:
         └── internal-tool/
 ```
 
-### `repo-do find <query>`
+### `rpd find <query>` / `repo-do find <query>`
 
 Search for repositories by name, group, or path fragment (case-insensitive).
 
 ```bash
-repo-do find super-image
-repo-do find STDSuperman
-repo-do find github.com
+rpd find super-image
+rpd find STDSuperman
+rpd find github.com
 ```
 
 **Output format:**
@@ -185,57 +185,57 @@ Found 2 repositories:
 
 Each result is prefixed with a number, followed by the absolute path.
 
-### `repo-do list [--refresh]`
+### `rpd list [--refresh]` / `repo-do list [--refresh]`
 
 List all managed repositories.
 
 ```bash
 # List from cache (fast)
-repo-do list
+rpd list
 
 # Force rebuild cache
-repo-do list --refresh
+rpd list --refresh
 ```
 
 When `--refresh` is used, `repo-do` scans the configured base directory, records detected Git repositories in configuration, and rebuilds the fast repository cache.
 
-### `repo-do scan [paths...]`
+### `rpd scan [paths...]` / `repo-do scan [paths...]`
 
 Scan existing Git repositories and track them in configuration.
 
 ```bash
 # Scan the configured base directory
-repo-do scan
+rpd scan
 
 # Scan one or more custom directories
-repo-do scan ~/Code ~/work
+rpd scan ~/Code ~/work
 ```
 
 Detected repositories are grouped by normalized remote URL. If the same remote exists in multiple local directories, all directories are stored as locations for that repository.
 
-### `repo-do remove <repo>`
+### `rpd remove <repo>` / `repo-do remove <repo>`
 
 Remove a repository from tracking (does not delete files).
 
 ```bash
-repo-do remove super-image
+rpd remove super-image
 ```
 
 If multiple matches are found, you'll be prompted to select which one to remove.
 
-### `repo-do config [options]`
+### `rpd config [options]` / `repo-do config [options]`
 
 View or modify configuration.
 
 ```bash
 # Show current config
-repo-do config
+rpd config
 
 # Get base directory
-repo-do config --get baseDirectory
+rpd config --get baseDirectory
 
 # Set base directory
-repo-do config --set baseDirectory /path/to/repos
+rpd config --set baseDirectory /path/to/repos
 ```
 
 ## Directory Structure
@@ -291,9 +291,9 @@ Configuration is stored in `~/.repo-do/config.json`:
 To improve performance, `repo-do` maintains a repository cache at `~/.repo-do/repo_cache.json`.
 
 **Cache is automatically updated when:**
-- Adding a new repository (`repo-do add`)
-- Removing a repository (`repo-do remove`)
-- Forcing refresh (`repo-do list --refresh`)
+- Adding a new repository (`rpd add` / `repo-do add`)
+- Removing a repository (`rpd remove` / `repo-do remove`)
+- Forcing refresh (`rpd list --refresh` / `repo-do list --refresh`)
 
 **Cache format:**
 ```json

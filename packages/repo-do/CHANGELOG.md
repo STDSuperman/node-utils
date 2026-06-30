@@ -1,5 +1,11 @@
 # repo-do
 
+## 1.3.2
+
+### Patch Changes
+
+- Fix npm README language links and document the `rpd` alias in examples.
+
 ## 1.3.1
 
 ### Patch Changes
